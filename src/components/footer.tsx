@@ -71,11 +71,11 @@ export const Footer: React.FC = () => {
                 if (["ArrowLeft", "KeyA", "KeyH", "Left", "A", "a", "H", "h"].includes(codeOrKey)) {
                     ev.preventDefault();
 
-                    audioRef.step(ev, -5);
+                    audioRef.step(ev, -2);
                 } else if (["ArrowRight", "KeyD", "KeyL", "Right", "D", "d", "L", "l"].includes(codeOrKey)) {
                     ev.preventDefault();
 
-                    audioRef.step(ev, 5);
+                    audioRef.step(ev, 2);
                 } else if (code === "KeyR" || key === "R" || key === "r") {
                     ev.preventDefault();
 
