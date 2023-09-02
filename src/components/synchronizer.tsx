@@ -136,11 +136,11 @@ export const Synchronizer: React.FC<ISynchronizerProps> = ({ state, dispatch }) 
                     break;
                 case InputAction.DecreaseOffset:
                     ev.preventDefault();
-                    adjust(ev, -0.5, selectIndex);
+                    adjust(ev, -0.01, selectIndex);
                     break;
                 case InputAction.IncreaseOffset:
                     ev.preventDefault();
-                    adjust(ev, 0.5, selectIndex);
+                    adjust(ev, 0.01, selectIndex);
                     break;
                 case InputAction.PrevLine:
                     ev.preventDefault();

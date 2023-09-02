@@ -53,11 +53,11 @@ export const Footer: React.FC = () => {
             switch (action) {
                 case InputAction.SeekBackward:
                     ev.preventDefault();
-                    audioRef.step(ev, -5);
+                    audioRef.step(ev, -2);
                     break;
                 case InputAction.SeekForward:
                     ev.preventDefault();
-                    audioRef.step(ev, 5);
+                    audioRef.step(ev, 2);
                     break;
                 case InputAction.ResetRate:
                     ev.preventDefault();
