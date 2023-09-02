@@ -16,7 +16,7 @@ jobs:
           node-version: "16"
           cache: "pnpm"
       - name: Install
-        run: sudo apt install rsync -y && npm i
+        run: npm i
       - name: Build
         run: npm run build
       - name: Publish
