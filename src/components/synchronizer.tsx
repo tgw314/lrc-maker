@@ -136,13 +136,13 @@ export const Synchronizer: React.FC<ISynchronizerProps> = ({ state, dispatch }) 
 
             if (code === "Minus" || key === "-" || key === "_") {
                 ev.preventDefault();
-                adjust(ev, -0.5, selectIndex);
+                adjust(ev, -0.01, selectIndex);
                 return;
             }
 
             if (code === "Equal" || key === "+" || key === "=") {
                 ev.preventDefault();
-                adjust(ev, 0.5, selectIndex);
+                adjust(ev, 0.01, selectIndex);
                 return;
             }
 
