@@ -69,10 +69,65 @@ export const audioRef: IAudioRef = {
     },
 };
 
+export interface LoopState {
+    enabled: boolean;
+    duration: number;
+    startTime: number;
+    endTime: number;
+}
+
+export const loopState: LoopState = {
+    enabled: false,
+    duration: 0.05,
+    startTime: 0,
+    endTime: 0,
+};
+
+export const setLoopRange = (startTime: number): void => {
+    loopState.startTime = startTime;
+    loopState.endTime = startTime + loopState.duration;
+    console.log(
+        `[Loop] Range set: start=${startTime.toFixed(3)}, end=${
+            loopState.endTime.toFixed(3)
+        }, duration=${loopState.duration}`,
+    );
+    audioStatePubSub.pub({
+        type: AudioActionType.loopChange,
+        payload: { ...loopState },
+    });
+};
+
+export const setLoopDuration = (duration: number): void => {
+    loopState.duration = guard(duration, 0.01, 0.25);
+    loopState.endTime = loopState.startTime + loopState.duration;
+    console.log(`[Loop] Duration changed to ${loopState.duration}s, new endTime: ${loopState.endTime}`);
+    audioStatePubSub.pub({
+        type: AudioActionType.loopChange,
+        payload: { ...loopState },
+    });
+};
+
+export const adjustLoopDuration = (delta: number): void => {
+    setLoopDuration(loopState.duration + delta);
+};
+
+export const toggleLoop = (startTime?: number): void => {
+    loopState.enabled = !loopState.enabled;
+    console.log(`[Loop] Toggle: enabled=${loopState.enabled}, startTime=${startTime?.toFixed(3)}`);
+    if (loopState.enabled && startTime !== undefined) {
+        setLoopRange(startTime);
+    }
+    audioStatePubSub.pub({
+        type: AudioActionType.loopChange,
+        payload: { ...loopState },
+    });
+};
+
 export const enum AudioActionType {
     pause,
     getDuration,
     rateChange,
+    loopChange,
 }
 
 export type AudioState =
@@ -87,6 +142,10 @@ export type AudioState =
     | {
         type: AudioActionType.rateChange;
         payload: number;
+    }
+    | {
+        type: AudioActionType.loopChange;
+        payload: LoopState;
     };
 
 export const audioStatePubSub = createPubSub<AudioState>();

@@ -6,10 +6,13 @@ import {
     type AudioState,
     audioStatePubSub,
     currentTimePubSub,
+    loopState,
+    setLoopDuration,
+    toggleLoop,
 } from "../utils/audiomodule.js";
 import { appContext, ChangBits } from "./app.context";
 import { loadAudioDialogRef } from "./loadaudio.js";
-import { Forward5sSVG, LoadAudioSVG, PauseSVG, PlaySVG, Replay5sSVG } from "./svg.js";
+import { Forward5sSVG, LoadAudioSVG, LoopSVG, PauseSVG, PlaySVG, Replay5sSVG } from "./svg.js";
 import { Waveform } from "./waveform";
 
 interface ISliderProps {
@@ -145,6 +148,54 @@ const TimeLine: React.FC<{ duration: number; paused: boolean }> = ({ duration, p
     );
 };
 
+const LoopControl: React.FC<{ lang: Language }> = ({ lang }) => {
+    const self = useRef(Symbol(LoopControl.name));
+
+    const [loopEnabled, setLoopEnabled] = useState(loopState.enabled);
+    const [loopDuration, setLoopDurationState] = useState(loopState.duration);
+
+    useEffect(() => {
+        return audioStatePubSub.sub(self.current, (data: AudioState) => {
+            if (data.type === AudioActionType.loopChange) {
+                setLoopEnabled(data.payload.enabled);
+                setLoopDurationState(data.payload.duration);
+            }
+        });
+    }, []);
+
+    const onLoopToggle = useCallback(() => {
+        toggleLoop();
+    }, []);
+
+    const onLoopDurationChange = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Number.parseFloat(ev.target.value);
+        setLoopDuration(value);
+        // setLoopDuration already updates endTime if loop is enabled, no need to call setLoopRange
+    }, []);
+
+    return (
+        <>
+            <button
+                className={`ripple glow loop-button ${loopEnabled ? "loop-active" : ""}`}
+                title={`${lang.audio.loop}: ${loopDuration.toFixed(2)}s`}
+                onClick={onLoopToggle}
+            >
+                <LoopSVG />
+                <span className="loop-duration">{loopDuration.toFixed(2)}s</span>
+            </button>
+
+            <Slider
+                className="loopduration"
+                min={0.01}
+                max={0.25}
+                step={0.01}
+                value={loopDuration}
+                onInput={onLoopDurationChange}
+            />
+        </>
+    );
+};
+
 const RateSlider: React.FC<{ lang: Language }> = ({ lang }) => {
     const self = useRef(Symbol(RateSlider.name));
 
@@ -260,6 +311,7 @@ export const LrcAudio: React.FC<{ lang: Language }> = ({ lang }) => {
             </button>
 
             <TimeLine duration={duration} paused={paused} />
+            <LoopControl lang={lang} />
             <RateSlider lang={lang} />
         </section>
     );

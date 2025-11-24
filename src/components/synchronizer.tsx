@@ -6,7 +6,7 @@ import { useKeyBindings } from "../hooks/useKeyBindings.js";
 import type { IState } from "../hooks/useLrc.js";
 import { type Action, ActionType } from "../hooks/useLrc.js";
 import { type State as PrefState } from "../hooks/usePref.js";
-import { audioRef, currentTimePubSub } from "../utils/audiomodule.js";
+import { audioRef, currentTimePubSub, loopState, setLoopRange, toggleLoop } from "../utils/audiomodule.js";
 import { InputAction } from "../utils/input-action.js";
 import { isKeyboardElement } from "../utils/is-keyboard-element.js";
 import { getMatchedAction } from "../utils/keybindings.js";
@@ -39,6 +39,17 @@ export const Synchronizer: React.FC<ISynchronizerProps> = ({ state, dispatch }) 
 
     const { prefState, lang } = useContext(appContext);
     const keyBindings = useKeyBindings();
+
+    // Update loop range when selectIndex changes and loop is enabled
+    useEffect(() => {
+        if (loopState.enabled) {
+            const currentLineTime = lyric[selectIndex]?.time;
+            if (currentLineTime !== undefined) {
+                setLoopRange(currentLineTime);
+                audioRef.currentTime = currentLineTime;
+            }
+        }
+    }, [selectIndex, lyric]);
 
     useEffect(() => {
         dispatch({
@@ -142,6 +153,20 @@ export const Synchronizer: React.FC<ISynchronizerProps> = ({ state, dispatch }) 
                     ev.preventDefault();
                     adjust(ev, 0.01, selectIndex);
                     break;
+                case InputAction.ToggleLoop: {
+                    ev.preventDefault();
+                    const currentLineTime = lyric[selectIndex]?.time;
+                    console.log(
+                        `[Loop] L key pressed: selectIndex=${selectIndex}, time=${currentLineTime?.toFixed(3)}`,
+                    );
+                    if (currentLineTime !== undefined) {
+                        toggleLoop(currentLineTime);
+                        if (loopState.enabled) {
+                            audioRef.currentTime = currentLineTime;
+                        }
+                    }
+                    break;
+                }
                 case InputAction.PrevLine:
                     ev.preventDefault();
                     dispatch({ type: ActionType.select, payload: (index) => index - 1 });
@@ -174,7 +199,7 @@ export const Synchronizer: React.FC<ISynchronizerProps> = ({ state, dispatch }) 
         return (): void => {
             document.removeEventListener("keydown", onKeydown);
         };
-    }, [adjust, dispatch, keyBindings, selectIndex, sync]);
+    }, [adjust, dispatch, keyBindings, selectIndex, sync, lyric]);
 
     const onLineClick = useCallback(
         (ev: React.MouseEvent<HTMLUListElement & HTMLLIElement>) => {

@@ -20,6 +20,9 @@ export const enum InputAction {
     IncreaseRate = "increaseRate",
     DecreaseRate = "decreaseRate",
     TogglePlay = "togglePlay",
+    ToggleLoop = "toggleLoop",
+    DecreaseLoopDuration = "decreaseLoopDuration",
+    IncreaseLoopDuration = "increaseLoopDuration",
 
     // Global actions
     ShowHelp = "showHelp",

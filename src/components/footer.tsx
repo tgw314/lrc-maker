@@ -1,7 +1,14 @@
 import SSK from "#const/session_key.json" assert { type: "json" };
 import { useCallback, useContext, useEffect, useReducer, useRef } from "react";
 import { useKeyBindings } from "../hooks/useKeyBindings.js";
-import { AudioActionType, audioRef, audioStatePubSub, currentTimePubSub } from "../utils/audiomodule.js";
+import {
+    adjustLoopDuration,
+    AudioActionType,
+    audioRef,
+    audioStatePubSub,
+    currentTimePubSub,
+    loopState,
+} from "../utils/audiomodule.js";
 import { InputAction } from "../utils/input-action.js";
 import { isKeyboardElement } from "../utils/is-keyboard-element.js";
 import { getMatchedAction } from "../utils/keybindings.js";
@@ -79,6 +86,14 @@ export const Footer: React.FC = () => {
                     ev.preventDefault();
                     audioRef.toggle();
                     break;
+                case InputAction.DecreaseLoopDuration:
+                    ev.preventDefault();
+                    adjustLoopDuration(-0.01);
+                    break;
+                case InputAction.IncreaseLoopDuration:
+                    ev.preventDefault();
+                    adjustLoopDuration(0.01);
+                    break;
             }
         }
         document.addEventListener("keydown", onKeydown);
@@ -118,6 +133,10 @@ export const Footer: React.FC = () => {
 
     const syncCurrentTime = useCallback(() => {
         currentTimePubSub.pub(audioRef.currentTime);
+        // Check loop playback on every frame for precise short loops
+        if (loopState.enabled && audioRef.currentTime >= loopState.endTime) {
+            audioRef.currentTime = loopState.startTime;
+        }
         rafId.current = requestAnimationFrame(syncCurrentTime);
     }, []);
 
@@ -148,6 +167,15 @@ export const Footer: React.FC = () => {
     const onAudioTimeUpdate = useCallback(() => {
         if (audioRef.paused) {
             currentTimePubSub.pub(audioRef.currentTime);
+        }
+        // Handle loop playback
+        if (loopState.enabled && audioRef.currentTime >= loopState.endTime) {
+            console.log(
+                `[Loop] Jumping back: ${audioRef.currentTime.toFixed(3)} >= ${
+                    loopState.endTime.toFixed(3)
+                }, duration: ${loopState.duration}`,
+            );
+            audioRef.currentTime = loopState.startTime;
         }
     }, []);
 

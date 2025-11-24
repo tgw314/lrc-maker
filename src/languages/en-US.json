@@ -18,6 +18,8 @@
         "replay5s": "replay 5s",
         "forward5s": "forward 5s",
         "resetRate": "reset playback rate",
+        "loop": "loop",
+        "loopDuration": "loop duration",
         "error": [
             "audio error",
             "audio aborted by user",
