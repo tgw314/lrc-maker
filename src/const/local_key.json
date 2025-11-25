@@ -4,5 +4,6 @@
     "token": "lrc-maker-oauth-token",
     "gistId": "lrc-maker-gist-id",
     "gistEtag": "lrc-maker-gist-etag",
-    "gistFile": "lrc-maker-gist-file"
+    "gistFile": "lrc-maker-gist-file",
+    "volume": "lrc-maker-volume"
 }

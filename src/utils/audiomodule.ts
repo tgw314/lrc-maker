@@ -7,6 +7,7 @@ interface IAudioRef extends React.RefObject<HTMLAudioElement> {
     readonly paused: boolean;
     playbackRate: number;
     currentTime: number;
+    volume: number;
     toggle: () => void;
     step: (
         ev: React.MouseEvent | React.KeyboardEvent | MouseEvent | KeyboardEvent,
@@ -45,6 +46,19 @@ export const audioRef: IAudioRef = {
     set currentTime(time: number) {
         if (this.current !== null && this.current.duration !== 0) {
             this.current.currentTime = time;
+        }
+    },
+
+    get volume() {
+        return this.current?.volume ?? 1;
+    },
+    set volume(vol: number) {
+        if (this.current !== null) {
+            this.current.volume = guard(vol, 0, 1);
+            audioStatePubSub.pub({
+                type: AudioActionType.volumeChange,
+                payload: this.current.volume,
+            });
         }
     },
 
@@ -128,6 +142,7 @@ export const enum AudioActionType {
     getDuration,
     rateChange,
     loopChange,
+    volumeChange,
 }
 
 export type AudioState =
@@ -146,6 +161,10 @@ export type AudioState =
     | {
         type: AudioActionType.loopChange;
         payload: LoopState;
+    }
+    | {
+        type: AudioActionType.volumeChange;
+        payload: number;
     };
 
 export const audioStatePubSub = createPubSub<AudioState>();

@@ -18,6 +18,9 @@
         "replay5s": "repetir 5s",
         "forward5s": "avançar 5s",
         "resetRate": "redefinir a taxa de reprodução",
+        "loop": "repetir",
+        "loopDuration": "duração do loop",
+        "volume": "volume",
         "error": [
             "erro de áudio",
             "áudio abortado pelo usuário",

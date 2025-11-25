@@ -18,6 +18,9 @@
         "replay5s": "5초 뒤로 가기",
         "forward5s": "5초 건너뛰기",
         "resetRate": "재생 속도 다시 설정",
+        "loop": "반복 재생",
+        "loopDuration": "반복 시간",
+        "volume": "볼륨",
         "error": [
             "오디오 오류",
             "사용자가 오디오를 중단함",

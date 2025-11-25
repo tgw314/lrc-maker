@@ -1,3 +1,4 @@
+import LSK from "#const/local_key.json" assert { type: "json" };
 import SSK from "#const/session_key.json" assert { type: "json" };
 import { useCallback, useContext, useEffect, useReducer, useRef } from "react";
 import { useKeyBindings } from "../hooks/useKeyBindings.js";
@@ -121,6 +122,16 @@ export const Footer: React.FC = () => {
 
     const onAudioLoadedMetadata = useCallback(() => {
         cancelAnimationFrame(rafId.current);
+
+        // Load saved volume from localStorage
+        const savedVolume = localStorage.getItem(LSK.volume);
+        if (savedVolume !== null) {
+            const volume = Number.parseFloat(savedVolume);
+            if (!Number.isNaN(volume)) {
+                audioRef.volume = volume;
+            }
+        }
+
         audioStatePubSub.pub({
             type: AudioActionType.getDuration,
             payload: audioRef.duration,
@@ -186,6 +197,10 @@ export const Footer: React.FC = () => {
         });
     }, []);
 
+    const onAudioVolumeChange = useCallback(() => {
+        localStorage.setItem(LSK.volume, audioRef.volume.toString());
+    }, []);
+
     const onAudioError = useCallback(
         (ev: React.SyntheticEvent<HTMLAudioElement>) => {
             const audio = ev.target as HTMLAudioElement;
@@ -214,6 +229,7 @@ export const Footer: React.FC = () => {
                 onEnded={onAudioEnded}
                 onTimeUpdate={onAudioTimeUpdate}
                 onRateChange={onAudioRateChange}
+                onVolumeChange={onAudioVolumeChange}
                 onError={onAudioError}
             />
             {prefState.builtInAudio || <LrcAudio lang={lang} />}

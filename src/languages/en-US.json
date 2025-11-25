@@ -20,6 +20,7 @@
         "resetRate": "reset playback rate",
         "loop": "loop",
         "loopDuration": "loop duration",
+        "volume": "volume",
         "error": [
             "audio error",
             "audio aborted by user",

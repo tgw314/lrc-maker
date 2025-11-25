@@ -18,6 +18,9 @@
         "replay5s": "dozadu 5s",
         "forward5s": "dopredu 5s",
         "resetRate": "obnoviť rýchlosť prehrávania",
+        "loop": "slučka",
+        "loopDuration": "dĺžka slučky",
+        "volume": "hlasitosť",
         "error": [
             "chyba zvuku",
             "zvuk prerušený používateľom",

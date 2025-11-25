@@ -247,6 +247,47 @@ const RateSlider: React.FC<{ lang: Language }> = ({ lang }) => {
     );
 };
 
+const VolumeSlider: React.FC<{ lang: Language }> = ({ lang }) => {
+    const self = useRef(Symbol(VolumeSlider.name));
+
+    const [volume, setVolume] = useState(audioRef.volume);
+
+    useEffect(() => {
+        return audioStatePubSub.sub(self.current, (data: AudioState) => {
+            if (data.type === AudioActionType.volumeChange) {
+                setVolume(data.payload);
+            }
+        });
+    }, []);
+
+    const onVolumeChange = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Number.parseFloat(ev.target.value);
+        setVolume(value);
+        audioRef.volume = value;
+    }, []);
+
+    const volumePercent = useMemo(() => {
+        return Math.round(volume * 100);
+    }, [volume]);
+
+    return (
+        <>
+            <button className="ripple glow" title={lang.audio.volume} disabled>
+                {volumePercent}%
+            </button>
+
+            <Slider
+                className="volume"
+                min={0}
+                max={1}
+                step={0.01}
+                value={volume}
+                onInput={onVolumeChange}
+            />
+        </>
+    );
+};
+
 export const LrcAudio: React.FC<{ lang: Language }> = ({ lang }) => {
     const self = useRef(Symbol(LrcAudio.name));
 
@@ -313,6 +354,7 @@ export const LrcAudio: React.FC<{ lang: Language }> = ({ lang }) => {
             <TimeLine duration={duration} paused={paused} />
             <LoopControl lang={lang} />
             <RateSlider lang={lang} />
+            <VolumeSlider lang={lang} />
         </section>
     );
 };

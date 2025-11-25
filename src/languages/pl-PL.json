@@ -18,6 +18,9 @@
         "replay5s": "cofnij o 5s",
         "forward5s": "przewiń o 5s",
         "resetRate": "zresetuj szybkość odtwarzania",
+        "loop": "pętla",
+        "loopDuration": "czas trwania pętli",
+        "volume": "głośność",
         "error": [
             "błąd audio",
             "odtwarzanie audio przerwane przez użytkownika",
