@@ -176,12 +176,11 @@ const LoopControl: React.FC<{ lang: Language }> = ({ lang }) => {
     return (
         <>
             <button
-                className={`ripple glow loop-button ${loopEnabled ? "loop-active" : ""}`}
+                className={`ripple glow ${loopEnabled ? "loop-active" : ""}`}
                 title={`${lang.audio.loop}: ${loopDuration.toFixed(2)}s`}
                 onClick={onLoopToggle}
             >
-                <LoopSVG />
-                <span className="loop-duration">{loopDuration.toFixed(2)}s</span>
+                <LoopSVG /> {loopDuration.toFixed(2)}s
             </button>
 
             <Slider
