@@ -103,6 +103,17 @@ export const Footer: React.FC = () => {
     }, [keyBindings]);
 
     useEffect(() => {
+        // Load saved volume from localStorage on component mount
+        const savedVolume = localStorage.getItem(LSK.volume);
+        if (savedVolume !== null) {
+            const volume = Number.parseFloat(savedVolume);
+            if (!Number.isNaN(volume)) {
+                audioRef.volume = volume;
+            }
+        }
+    }, []);
+
+    useEffect(() => {
         function onDrop(ev: DragEvent) {
             const file = ev.dataTransfer!.files[0];
             receiveFile(file, setAudioSrc);
@@ -122,16 +133,6 @@ export const Footer: React.FC = () => {
 
     const onAudioLoadedMetadata = useCallback(() => {
         cancelAnimationFrame(rafId.current);
-
-        // Load saved volume from localStorage
-        const savedVolume = localStorage.getItem(LSK.volume);
-        if (savedVolume !== null) {
-            const volume = Number.parseFloat(savedVolume);
-            if (!Number.isNaN(volume)) {
-                audioRef.volume = volume;
-            }
-        }
-
         audioStatePubSub.pub({
             type: AudioActionType.getDuration,
             payload: audioRef.duration,
