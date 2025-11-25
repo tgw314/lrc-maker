@@ -8,6 +8,7 @@ import {
     audioRef,
     audioStatePubSub,
     currentTimePubSub,
+    initLoopDuration,
     loopState,
 } from "../utils/audiomodule.js";
 import { InputAction } from "../utils/input-action.js";
@@ -111,6 +112,9 @@ export const Footer: React.FC = () => {
                 audioRef.volume = volume;
             }
         }
+
+        // Load saved loop duration from localStorage on component mount
+        initLoopDuration();
     }, []);
 
     useEffect(() => {

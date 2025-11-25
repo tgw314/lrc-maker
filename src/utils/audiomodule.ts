@@ -92,9 +92,23 @@ export interface LoopState {
 
 export const loopState: LoopState = {
     enabled: false,
-    duration: 0.05,
+    duration: 0.10,
     startTime: 0,
     endTime: 0,
+};
+
+export const initLoopDuration = (): void => {
+    try {
+        const saved = localStorage.getItem("lrc-maker-loop-duration");
+        if (saved !== null) {
+            const duration = Number.parseFloat(saved);
+            if (!Number.isNaN(duration) && duration >= 0.01 && duration <= 0.25) {
+                loopState.duration = duration;
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load loop duration:", e);
+    }
 };
 
 export const setLoopRange = (startTime: number): void => {
@@ -111,10 +125,19 @@ export const setLoopRange = (startTime: number): void => {
     });
 };
 
-export const setLoopDuration = (duration: number): void => {
+export const setLoopDuration = (duration: number, saveToStorage = true): void => {
     loopState.duration = guard(duration, 0.01, 0.25);
     loopState.endTime = loopState.startTime + loopState.duration;
     console.log(`[Loop] Duration changed to ${loopState.duration}s, new endTime: ${loopState.endTime}`);
+
+    if (saveToStorage) {
+        try {
+            localStorage.setItem("lrc-maker-loop-duration", loopState.duration.toString());
+        } catch (e) {
+            console.error("Failed to save loop duration:", e);
+        }
+    }
+
     audioStatePubSub.pub({
         type: AudioActionType.loopChange,
         payload: { ...loopState },

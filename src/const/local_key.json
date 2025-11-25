@@ -5,5 +5,6 @@
     "gistId": "lrc-maker-gist-id",
     "gistEtag": "lrc-maker-gist-etag",
     "gistFile": "lrc-maker-gist-file",
-    "volume": "lrc-maker-volume"
+    "volume": "lrc-maker-volume",
+    "loopDuration": "lrc-maker-loop-duration"
 }
