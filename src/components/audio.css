@@ -121,6 +121,11 @@ audio[src] + .lrc-audio > .loadaudio-button > svg {
     max-width: 150px;
 }
 
+.volume-slider {
+    flex: 1 1 auto;
+    max-width: 150px;
+}
+
 .loop-button {
     display: flex;
     align-items: center;
