@@ -126,9 +126,19 @@ audio[src] + .lrc-audio > .loadaudio-button > svg {
     max-width: 150px;
 }
 
+.lrc-audio > button {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
 .loop-active {
     color: var(--theme-color);
     background-color: rgba(var(--theme-rgb), 0.2);
+}
+
+.volume-display {
+    pointer-events: none;
 }
 
 input[type="range"] {

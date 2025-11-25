@@ -271,7 +271,7 @@ const VolumeSlider: React.FC<{ lang: Language }> = ({ lang }) => {
 
     return (
         <>
-            <button className="ripple glow" title={lang.audio.volume} disabled>
+            <button className="ripple glow volume-display" title={lang.audio.volume}>
                 {volumePercent}%
             </button>
 
